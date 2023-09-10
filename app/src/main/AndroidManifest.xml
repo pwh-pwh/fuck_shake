@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,6 +13,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Fuck_shake"
-        tools:targetApi="31" />
+        tools:targetApi="31">
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" /> <!-- 设置你的模块描述 -->
+        <meta-data
+            android:name="xposeddescription"
+            android:value="摇一摇fuck you" /> <!-- 最低 Xposed 版本号，若你正在使用 EdXposed/LSPosed，建议最低为 93 -->
+        <meta-data
+            android:name="xposedminversion"
+            android:value="93" /> <!-- 可选：配置支持 New XSharedPreferences 可无需调整 xposedminversion 为 93 -->
+        <meta-data
+            android:name="xposedsharedprefs"
+            android:value="true" />
+
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
 
 </manifest>
