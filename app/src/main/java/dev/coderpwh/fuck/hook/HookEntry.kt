@@ -1,6 +1,5 @@
 package dev.coderpwh.fuck.hook
 
-import android.app.Activity
 import android.content.Intent
 import android.hardware.SensorManager
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
@@ -8,8 +7,9 @@ import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.encase
 import com.highcapable.yukihookapi.hook.log.loggerI
 import com.highcapable.yukihookapi.hook.param.HookParam
-import com.highcapable.yukihookapi.hook.type.android.ActivityClass
+import com.highcapable.yukihookapi.hook.param.PackageParam
 import com.highcapable.yukihookapi.hook.type.android.ContextWrapperClass
+import com.highcapable.yukihookapi.hook.type.java.JavaClassLoader
 import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 
 @InjectYukiHookWithXposed(modulePackageName = "dev.coderpwh.fuck.hook")
@@ -32,23 +32,42 @@ object HookEntry:IYukiHookXposedInit {
                 replaceToTrue()
             }
         }
-        ContextWrapperClass.hook {
+
+        JavaClassLoader.hook {
             injectMember {
                 method {
-                    name = "startActivity"
+                    name = "loadClass"
                 }
-                replaceUnit {
-                    hookStartAt("startActivity",packageName)
+                afterHook {
+                    val c = this.result as Class<*>
+                    val cl = c.classLoader!!
+                    hookCw(cl)
                 }
             }
+        }
 
-            injectMember {
-                method {
-                    name = "startActivityForResult"
-                }
-                replaceUnit {
-                    hookStartAt("startActivityForResult",packageName)
-                }
+
+    }
+}
+
+fun PackageParam.hookCw(cl:ClassLoader) {
+    appClassLoader = cl
+    ContextWrapperClass.hook {
+        injectMember {
+            method {
+                name = "startActivity"
+            }
+            replaceUnit {
+                hookStartAt("startActivity",packageName)
+            }
+        }
+
+        injectMember {
+            method {
+                name = "startActivityForResult"
+            }
+            replaceUnit {
+                hookStartAt("startActivityForResult",packageName)
             }
         }
     }
