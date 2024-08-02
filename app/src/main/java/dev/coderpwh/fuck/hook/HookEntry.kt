@@ -23,5 +23,16 @@ object HookEntry:IYukiHookXposedInit {
                 replaceToTrue()
             }
         }
+
+        "com.android.server.wm.ActivityStartInterceptor".toClass().hook {
+            injectMember {
+                method {
+                    name = "interceptSuspendedPackageIfNeeded"
+                }
+                afterHook {
+
+                }
+            }
+        }
     }
 }
